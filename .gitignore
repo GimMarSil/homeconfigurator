@@ -1,28 +1,50 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# 📦 Node.js & Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
 
-# dependencies
-/node_modules
+# 🔐 Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+*.env
 
-# next.js
-/.next/
-/out/
+# ⚙️ Configuração de base de dados
+.prisma/
+*.sqlite
+*.db
 
-# production
-/build
+# 📁 Uploads e ficheiros temporários
+uploads/
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.pdf
 
-# debug
+# 📊 Logs
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
+*.log
 
-# env files
-.env*
+# 🧠 Ficheiros de sistema / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
 
-# vercel
-.vercel
+# 🧪 Testes e cobertura
+coverage/
+jest-output/
+playwright-report/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-/lib/generated/prisma
+# 🧪 Docker/CI (caso uses)
+docker-compose.override.yml
+*.pid
+
+# 🔄

@@ -1,0 +1,17 @@
+nome,categoria,unidadeMedida,descricao
+"Exemplo Tinta Acrílica","ACABAMENTOS","L","Tinta acrílica para paredes interiores"
+"Exemplo Tijolo Cerâmico","ESTRUTURA","un","Tijolo cerâmico para alvenaria"
+"Exemplo Cerâmica de Parede","REVESTIMENTO","m²","Cerâmica para revestimento de paredes"
+"Exemplo Isolamento Térmico","ISOLAMENTO","m²","Material isolante térmico"
+"Exemplo Tubo PVC","INSTALACOES","m","Tubagem PVC para instalações"
+"Exemplo Pavimento Laminado","ACABAMENTOS","m²","Pavimento laminado imitação madeira"
+"Exemplo Papel de Parede","DECORACAO","m²","Papel de parede decorativo"
+Revestimentos Cerâmicos,m²,Azulejos e mosaicos para paredes e pavimentos
+Electrodomésticos,unidade,Equipamentos elétricos para a casa
+Iluminação,unidade,Lâmpadas e equipamentos de iluminação
+Mobiliário,unidade,Móveis para cozinha e outras divisões
+Pavimentos,m²,Pavimentos em madeira laminado e outros materiais
+Sanitários,unidade,Equipamentos sanitários como sanitas bidés e lavatórios
+Tintas e Vernizes,litro,Tintas para paredes e acabamentos
+Materiais Elétricos,unidade,Tomadas interruptores e material elétrico
+Ferragens,unidade,Fechaduras puxadores e acessórios metálicos 

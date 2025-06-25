@@ -1,0 +1,7 @@
+nome,referencia,marca,descricao,precoUnitario,fornecedor,urlFabricante,imagem,fichaTecnica,disponivel,tipoMaterialId
+Azulejo Branco 20x20,AZ001,Cerâmica Nacional,Azulejo branco liso 20x20cm para paredes,12.50,Fornecedor Lda,https://www.ceramicanacional.pt,https://exemplo.com/azulejo.jpg,https://exemplo.com/ficha.pdf,true,1
+Frigorífico Combi,FR001,Electrolux,Frigorífico combinado A++ 350L,599.00,Electrodomésticos SA,https://www.electrolux.pt,https://exemplo.com/frigorifico.jpg,https://exemplo.com/manual.pdf,true,2
+Lâmpada LED 9W,LED001,Philips,Lâmpada LED 9W branco quente,3.50,Iluminação Total,https://www.philips.pt,https://exemplo.com/lampada.jpg,https://exemplo.com/especificacoes.pdf,true,3
+Móvel Cozinha Base,MC001,IKEA,Móvel de cozinha base 60cm,89.90,IKEA Portugal,https://www.ikea.pt,https://exemplo.com/movel.jpg,https://exemplo.com/montagem.pdf,true,4
+Pavimento Laminado Carvalho,PAV001,Quick-Step,Pavimento laminado imitação carvalho 8mm,18.90,Pavimentos Premium,https://www.quick-step.pt,https://exemplo.com/pavimento.jpg,https://exemplo.com/instalacao.pdf,true,5
+Sanitário Suspenso,SAN001,Roca,Sanitário suspenso branco com assento,269.00,Sanitários Modernos,https://www.roca.pt,https://exemplo.com/sanitario.jpg,https://exemplo.com/dimensoes.pdf,true,6 

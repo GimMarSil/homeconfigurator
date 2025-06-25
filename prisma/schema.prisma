@@ -1,0 +1,476 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Cliente {
+  id                      Int           @id @default(autoincrement())
+  nome                    String
+  email                   String        @unique
+  telefone                String?
+  morada                  String?
+  nif                     String?
+  logoUrl                 String?
+  descricao               String?
+  status                  ClienteStatus @default(ATIVO)
+  plano                   PlanoCliente  @default(BASICO)
+  maxEdificios            Int           @default(5)
+  maxUtilizadores         Int           @default(10)
+  criadoEm                DateTime      @default(now())
+  atualizadoEm            DateTime      @updatedAt
+  comentarios             Comentario[]
+  edificios               Edificio[]
+  materiaisPersonalizados Material[]
+  notificacoes            Notificacao[]
+  utilizadores            Utilizador[]
+
+  @@map("clientes")
+}
+
+model Utilizador {
+  id                    Int                  @id @default(autoincrement())
+  nome                  String
+  email                 String               @unique
+  telefone              String?
+  password              String
+  avatar                String?
+  role                  UtilizadorRole       @default(VISUALIZADOR)
+  status                UtilizadorStatus     @default(ATIVO)
+  ultimoAcesso          DateTime?
+  clienteId             Int?
+  criadoEm              DateTime             @default(now())
+  atualizadoEm          DateTime             @updatedAt
+  comentarios           Comentario[]
+  aprovacoes            HistoricoAprovacao[]
+  notificacoesRecebidas Notificacao[]        @relation("UtilizadorDestinatario")
+  notificacoesEnviadas  Notificacao[]        @relation("UtilizadorRemetente")
+  cliente               Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  @@index([clienteId], map: "utilizadores_clienteId_fkey")
+  @@map("utilizadores")
+}
+
+model Edificio {
+  id                Int                @id @default(autoincrement())
+  nome              String
+  morada            String
+  codigoPostal      String?
+  cidade            String?
+  tipologia         String?
+  nPisos            Int                @default(1)
+  areaBruta         Float?
+  anoConstrucao     Int?
+  plantaImagem      String?
+  estado            EdificioEstado     @default(EM_CURSO)
+  descricao         String?
+  prazoExecucao     DateTime?
+  orcamentoTotal    Float?
+  clienteId         Int
+  criadoEm          DateTime           @default(now())
+  atualizadoEm      DateTime           @updatedAt
+  comentarios       Comentario[]
+  cliente           Cliente            @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  ficheiros         Ficheiro[]
+  historicoDecisoes HistoricoDecisao[]
+  zonasEspecificas  ZonaEspecifica[]
+
+  @@index([clienteId], map: "edificios_clienteId_fkey")
+  @@map("edificios")
+}
+
+model ZonaTipo {
+  id                  Int                @id @default(autoincrement())
+  nome                String             @unique
+  categoria           ZonaCategoria
+  descricao           String?
+  criadoEm            DateTime           @default(now())
+  atualizadoEm        DateTime           @updatedAt
+  materiaisPermitidos ZonaTipoMaterial[]
+  zonasEspecificas    ZonaEspecifica[]
+
+  @@map("zonas_tipo")
+}
+
+model ZonaEspecifica {
+  id                    Int                   @id @default(autoincrement())
+  nome                  String
+  descricao             String?
+  area                  Float
+  pe                    Float?
+  estado                ZonaEstado            @default(PENDENTE)
+  estadoAprovacao       EstadoAprovacao       @default(RASCUNHO)
+  observacoes           String?
+  imagemIdentificacao   String?
+  orcamentoEstimado     Float?
+  zonaTipoId            Int
+  edificioId            Int
+  criadoEm              DateTime              @default(now())
+  atualizadoEm          DateTime              @updatedAt
+  comentarios           Comentario[]
+  ficheiros             Ficheiro[]
+  historicoAprovacoes   HistoricoAprovacao[]
+  materiaisSelecionados MaterialSelecionado[]
+  selecoesMaterial      SelecaoMaterial[]
+  edificio              Edificio              @relation(fields: [edificioId], references: [id], onDelete: Cascade)
+  zonaTipo              ZonaTipo              @relation(fields: [zonaTipoId], references: [id])
+
+  @@index([edificioId], map: "zonas_especificas_edificioId_fkey")
+  @@index([zonaTipoId], map: "zonas_especificas_zonaTipoId_fkey")
+  @@map("zonas_especificas")
+}
+
+model TipoMaterial {
+  id            Int        @id @default(autoincrement())
+  nome          String     @unique
+  categoria     String
+  unidadeMedida String
+  descricao     String?
+  criadoEm      DateTime   @default(now())
+  atualizadoEm  DateTime   @updatedAt
+  materiais     Material[]
+
+  @@map("tipos_material")
+}
+
+model Material {
+  id                    Int                   @id @default(autoincrement())
+  nome                  String
+  referencia            String?               @unique
+  marca                 String?
+  descricao             String?
+  precoUnitario         Float                 @default(0)
+  fornecedor            String?
+  urlFabricante         String?
+  imagem                String?
+  fichaTecnica          String?
+  disponivel            Boolean               @default(true)
+  isGlobal              Boolean               @default(true)
+  aprovado              Boolean               @default(false)
+  motivoRejeicao        String?
+  caracteristicas       Json?
+  embalagem             Json?
+  instalacao            Json?
+  tipoMaterialId        Int
+  clienteId             Int?
+  criadoEm              DateTime              @default(now())
+  atualizadoEm          DateTime              @updatedAt
+  comentarios           Comentario[]
+  ficheiros             Ficheiro[]
+  cliente               Cliente?              @relation(fields: [clienteId], references: [id])
+  tipoMaterial          TipoMaterial          @relation(fields: [tipoMaterialId], references: [id])
+  materiaisSelecionados MaterialSelecionado[]
+  selecoesMaterial      SelecaoMaterial[]
+  zonaTipoMateriais     ZonaTipoMaterial[]
+
+  @@index([clienteId], map: "materiais_clienteId_fkey")
+  @@index([tipoMaterialId], map: "materiais_tipoMaterialId_fkey")
+  @@map("materiais")
+}
+
+model MaterialSelecionado {
+  id            Int            @id @default(autoincrement())
+  quantidade    Float          @default(1)
+  precoUnitario Float
+  observacoes   String?
+  materialId    Int
+  zonaId        Int
+  criadoEm      DateTime       @default(now())
+  atualizadoEm  DateTime       @updatedAt
+  material      Material       @relation(fields: [materialId], references: [id])
+  zona          ZonaEspecifica @relation(fields: [zonaId], references: [id], onDelete: Cascade)
+
+  @@unique([materialId, zonaId])
+  @@index([zonaId], map: "materiais_selecionados_zonaId_fkey")
+  @@map("materiais_selecionados")
+}
+
+model ZonaTipoMaterial {
+  id         Int      @id @default(autoincrement())
+  zonaTipoId Int
+  materialId Int
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  zonaTipo   ZonaTipo @relation(fields: [zonaTipoId], references: [id], onDelete: Cascade)
+
+  @@unique([zonaTipoId, materialId])
+  @@index([materialId], map: "zona_tipo_materiais_materialId_fkey")
+  @@map("zona_tipo_materiais")
+}
+
+model Comentario {
+  id              Int                  @id @default(autoincrement())
+  conteudo        String
+  tipo            TipoComentario       @default(GERAL)
+  prioridade      PrioridadeComentario @default(NORMAL)
+  resolvido       Boolean              @default(false)
+  privado         Boolean              @default(false)
+  utilizadorId    Int
+  clienteId       Int
+  edificioId      Int?
+  zonaId          Int?
+  materialId      Int?
+  comentarioPaiId Int?
+  criadoEm        DateTime             @default(now())
+  atualizadoEm    DateTime             @updatedAt
+  cliente         Cliente              @relation(fields: [clienteId], references: [id])
+  comentarioPai   Comentario?          @relation("ComentarioResposta", fields: [comentarioPaiId], references: [id])
+  respostas       Comentario[]         @relation("ComentarioResposta")
+  edificio        Edificio?            @relation(fields: [edificioId], references: [id])
+  material        Material?            @relation(fields: [materialId], references: [id])
+  utilizador      Utilizador           @relation(fields: [utilizadorId], references: [id])
+  zona            ZonaEspecifica?      @relation(fields: [zonaId], references: [id])
+  ficheiros       Ficheiro[]
+
+  @@index([clienteId], map: "comentarios_clienteId_fkey")
+  @@index([comentarioPaiId], map: "comentarios_comentarioPaiId_fkey")
+  @@index([edificioId], map: "comentarios_edificioId_fkey")
+  @@index([materialId], map: "comentarios_materialId_fkey")
+  @@index([utilizadorId], map: "comentarios_utilizadorId_fkey")
+  @@index([zonaId], map: "comentarios_zonaId_fkey")
+  @@map("comentarios")
+}
+
+model HistoricoAprovacao {
+  id             Int             @id @default(autoincrement())
+  acao           AcaoAprovacao
+  estadoAnterior EstadoAprovacao
+  estadoNovo     EstadoAprovacao
+  observacoes    String?
+  utilizadorId   Int
+  zonaId         Int
+  materialId     Int?
+  criadoEm       DateTime        @default(now())
+  utilizador     Utilizador      @relation(fields: [utilizadorId], references: [id])
+  zona           ZonaEspecifica  @relation(fields: [zonaId], references: [id])
+
+  @@index([utilizadorId], map: "historico_aprovacoes_utilizadorId_fkey")
+  @@index([zonaId], map: "historico_aprovacoes_zonaId_fkey")
+  @@map("historico_aprovacoes")
+}
+
+model HistoricoDecisao {
+  id             Int            @id @default(autoincrement())
+  titulo         String
+  descricao      String
+  tipo           TipoDecisao
+  impacto        ImpactoDecisao @default(BAIXO)
+  custoAdicional Float?
+  prazoAdicional Int?
+  utilizadorId   Int
+  edificioId     Int
+  zonaId         Int?
+  criadoEm       DateTime       @default(now())
+  edificio       Edificio       @relation(fields: [edificioId], references: [id])
+
+  @@index([edificioId], map: "historico_decisoes_edificioId_fkey")
+  @@map("historico_decisoes")
+}
+
+model Notificacao {
+  id             Int             @id @default(autoincrement())
+  titulo         String
+  mensagem       String
+  tipo           TipoNotificacao
+  lida           Boolean         @default(false)
+  url            String?
+  clienteId      Int
+  remetenteId    Int?
+  destinatarioId Int?
+  edificioId     Int?
+  zonaId         Int?
+  criadoEm       DateTime        @default(now())
+  lidaEm         DateTime?
+  cliente        Cliente         @relation(fields: [clienteId], references: [id])
+  destinatario   Utilizador?     @relation("UtilizadorDestinatario", fields: [destinatarioId], references: [id])
+  remetente      Utilizador?     @relation("UtilizadorRemetente", fields: [remetenteId], references: [id])
+
+  @@index([clienteId], map: "notificacoes_clienteId_fkey")
+  @@index([destinatarioId], map: "notificacoes_destinatarioId_fkey")
+  @@index([remetenteId], map: "notificacoes_remetenteId_fkey")
+  @@map("notificacoes")
+}
+
+model Ficheiro {
+  id           Int               @id @default(autoincrement())
+  nomeOriginal String
+  nomeArquivo  String
+  caminho      String
+  tamanho      Int
+  tipoMime     String
+  categoria    FicheiroCategoria
+  descricao    String?
+  edificioId   Int?
+  zonaId       Int?
+  materialId   Int?
+  comentarioId Int?
+  criadoEm     DateTime          @default(now())
+  atualizadoEm DateTime          @updatedAt
+  comentario   Comentario?       @relation(fields: [comentarioId], references: [id], onDelete: Cascade)
+  edificio     Edificio?         @relation(fields: [edificioId], references: [id], onDelete: Cascade)
+  material     Material?         @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  zona         ZonaEspecifica?   @relation(fields: [zonaId], references: [id], onDelete: Cascade)
+
+  @@index([comentarioId], map: "ficheiros_comentarioId_fkey")
+  @@index([edificioId], map: "ficheiros_edificioId_fkey")
+  @@index([materialId], map: "ficheiros_materialId_fkey")
+  @@index([zonaId], map: "ficheiros_zonaId_fkey")
+  @@map("ficheiros")
+}
+
+model SelecaoMaterial {
+  id             Int             @id @default(autoincrement())
+  quantidade     Float           @default(1)
+  precoUnitario  Float
+  precoTotal     Float
+  observacoes    String?
+  estado         EstadoAprovacao @default(RASCUNHO)
+  zonaId         Int
+  materialId     Int
+  dataSelecao    DateTime        @default(now())
+  dataAprovacao  DateTime?
+  aprovadoPor    String?
+  motivoRejeicao String?
+  material       Material        @relation(fields: [materialId], references: [id])
+  zona           ZonaEspecifica  @relation(fields: [zonaId], references: [id], onDelete: Cascade)
+
+  @@unique([zonaId, materialId])
+  @@index([materialId], map: "selecoes_material_materialId_fkey")
+  @@map("selecoes_material")
+}
+
+enum ClienteStatus {
+  ATIVO
+  INATIVO
+}
+
+enum UtilizadorRole {
+  ADMIN
+  GESTOR
+  VISUALIZADOR
+  SUPER_ADMIN
+}
+
+enum UtilizadorStatus {
+  ATIVO
+  INATIVO
+}
+
+enum EdificioEstado {
+  EM_CURSO
+  FINALIZADO
+  PAUSADO
+}
+
+enum ZonaCategoria {
+  HABITACIONAL
+  TECNICO
+  EXTERIOR
+  CIRCULACAO
+  SERVICOS
+}
+
+enum ZonaEstado {
+  PENDENTE
+  EM_PROGRESSO
+  CONCLUIDO
+}
+
+enum FicheiroCategoria {
+  PLANTA_EDIFICIO
+  DESENHO_TECNICO
+  DOCUMENTO_LEGAL
+  FOTO_ZONA
+  FICHA_TECNICA
+  IMAGEM_MATERIAL
+  CERTIFICACAO
+  MANUAL_INSTALACAO
+  GARANTIA
+  OUTROS
+}
+
+enum EstadoAprovacao {
+  RASCUNHO
+  SUBMETIDO
+  EM_REVISAO
+  APROVADO
+  REJEITADO
+  APROVADO_COM_CONDICOES
+
+  @@map("estados_aprovacao")
+}
+
+enum PlanoCliente {
+  BASICO
+  PROFISSIONAL
+  ENTERPRISE
+
+  @@map("planos_cliente")
+}
+
+enum TipoComentario {
+  GERAL
+  DUVIDA
+  SUGESTAO
+  PROBLEMA
+  APROVACAO
+  REJEICAO
+  INFORMACAO
+
+  @@map("tipos_comentario")
+}
+
+enum PrioridadeComentario {
+  BAIXA
+  NORMAL
+  ALTA
+  URGENTE
+
+  @@map("prioridades_comentario")
+}
+
+enum AcaoAprovacao {
+  SUBMETER
+  APROVAR
+  REJEITAR
+  SOLICITAR_REVISAO
+  APROVAR_COM_CONDICOES
+
+  @@map("acoes_aprovacao")
+}
+
+enum TipoDecisao {
+  MATERIAL_ALTERADO
+  ZONA_MODIFICADA
+  ORCAMENTO_AJUSTADO
+  PRAZO_ALTERADO
+  ESPECIFICACAO_TECNICA
+  APROVACAO_CLIENTE
+
+  @@map("tipos_decisao")
+}
+
+enum ImpactoDecisao {
+  BAIXO
+  MEDIO
+  ALTO
+  CRITICO
+
+  @@map("impactos_decisao")
+}
+
+enum TipoNotificacao {
+  NOVA_SUBMISSAO
+  APROVACAO
+  REJEICAO
+  COMENTARIO
+  PRAZO_PROXIMO
+  ORCAMENTO_EXCEDIDO
+  DOCUMENTO_ADICIONADO
+  SISTEMA
+
+  @@map("tipos_notificacao")
+}

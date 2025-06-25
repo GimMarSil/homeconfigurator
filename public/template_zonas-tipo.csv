@@ -1,0 +1,12 @@
+nome,categoria,descricao
+"Exemplo Sala de Estar","RESIDENCIAL","Espaço principal de convívio familiar"
+"Exemplo Cozinha","RESIDENCIAL","Área de preparação e confeção de alimentos"
+"Exemplo Quarto Casal","RESIDENCIAL","Quarto principal para casal"
+"Exemplo Casa de Banho","RESIDENCIAL","Casa de banho completa com duche"
+"Exemplo Escritório","COMERCIAL","Espaço de trabalho administrativo"
+"Exemplo Loja","COMERCIAL","Espaço comercial de venda ao público"
+"Exemplo Armazém","INDUSTRIAL","Espaço para armazenamento de mercadorias"
+"Exemplo Oficina","INDUSTRIAL","Espaço de produção e manufactura"
+"Exemplo Sala de Aula","PUBLICA","Espaço educativo para ensino"
+"Exemplo Auditório","PUBLICA","Espaço para eventos e apresentações"
+"Exemplo Loft","MISTA","Espaço aberto multifuncional" 

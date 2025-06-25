@@ -200,15 +200,10 @@ Esta é a documentação completa do **Home Configurator**, uma plataforma SaaS 
 
 ---
 
-## 📄 Licença e Termos
+## 📄 Licença
 
-### Licença
-Este software é proprietário e licenciado sob os termos do contrato de licenciamento do Home Configurator.
-
-### Termos de Uso
-- Uso autorizado apenas para fins comerciais licenciados
-- Proibida a redistribuição sem autorização
-- Suporte técnico incluído conforme plano contratado
+Este projeto está disponível sob os termos da [Licença MIT](../LICENSE).
+Sinta‑se livre para utilizar e modificar o software de acordo com os termos dessa licença.
 
 ---
 
